@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Organization Settings - ALPHA</title>
+    <style>
+        body { 
+            margin: 0; font-family: 'Segoe UI', sans-serif; 
+            background-color: {{ colors.light_gray }}; 
+            color: {{ colors.dark_gray }}; 
+            display: flex; height: 100vh; 
+        }
+        .sidebar { 
+            width: 250px; background-color: {{ colors.navy }}; 
+            color: {{ colors.white }}; padding: 20px; 
+            display: flex; flex-direction: column; 
+        }
+        .sidebar h2 { color: {{ colors.gold }}; margin-bottom: 5px; }
+        .sidebar p { font-size: 10px; color: #a0aec0; margin-top: 0; }
+        .nav-item { 
+            padding: 12px 15px; margin: 5px 0; border-radius: 5px; 
+            text-decoration: none; color: white; display: block; 
+        }
+        .nav-item:hover, .nav-item.active { background-color: {{ colors.blue }}; }
+        .main-content { flex: 1; padding: 40px; overflow-y: auto; }
+        .card { 
+            background: {{ colors.white }}; padding: 30px; 
+            border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
+            max-width: 600px; border-top: 5px solid {{ colors.gold }}; 
+        }
+        .plan-name { 
+            font-size: 24px; font-weight: bold; 
+            color: {{ colors.blue }}; margin-bottom: 10px; 
+        }
+        .detail { margin-bottom: 10px; font-size: 16px; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>ALPHA</h2>
+        <p>SMART COMMUNICATION. BETTER BUSINESS.</p>
+        <div style="margin-top: 30px;">
+            <a href="/" class="nav-item">Dashboard</a>
+            <a href="/add-contact/" class="nav-item">Add Contact</a>
+            <a href="/agent-workspace/" class="nav-item">Agent Workspace</a>
+            <a href="/supervisor/" class="nav-item">Supervisor View</a>
+            <a href="/settings/" class="nav-item active">Settings</a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <h1>Organization Settings</h1>
+        <div class="card">
+            <h2>Subscription & Usage</h2>
+            {% if subscription %}
+                <div class="plan-name">{{ subscription.plan }} Plan</div>
+                <div class="detail">Max Agents Allowed: <strong>{{ subscription.max_agents }}</strong></div>
+                <div class="detail">Status: <strong>{% if subscription.is_active %}Active{% else %}Inactive{% endif %}</strong></div>
+                <div class="detail" style="color: #a0aec0; font-size: 14px; margin-top: 20px;">
+                    Stripe ID: {{ subscription.stripe_customer_id|default:"Not Connected" }}
+                </div>
+            {% else %}
+                <p style="color: #a0aec0;">No subscription found. Please add one in the Django Admin panel.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

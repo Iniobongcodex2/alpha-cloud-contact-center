@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent Workspace - ALPHA</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: {{ colors.light_gray }};
+            color: {{ colors.dark_gray }};
+            display: flex;
+            height: 100vh;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: {{ colors.navy }};
+            color: {{ colors.white }};
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .sidebar h2 { color: {{ colors.gold }}; margin-bottom: 5px; }
+        .sidebar p { font-size: 10px; letter-spacing: 1px; color: #a0aec0; margin-top: 0; }
+        .nav-item {
+            padding: 12px 15px; margin: 5px 0; border-radius: 5px;
+            cursor: pointer; transition: 0.3s; text-decoration: none; color: white; display: block;
+        }
+        .nav-item:hover, .nav-item.active { background-color: {{ colors.blue }}; }
+        
+        .main-content { flex: 1; padding: 40px; overflow-y: auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .header h1 { margin: 0; color: {{ colors.navy }}; }
+        
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .workspace-card, .table-container {
+            background: {{ colors.white }};
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-top: 5px solid {{ colors.gold }};
+        }
+        
+        .status-display {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .status-Available { background-color: #c6f6d5; color: #22543d; }
+        .status-Busy { background-color: #fed7d7; color: #742a2a; }
+        .status-Offline { background-color: #e2e8f0; color: #4a5568; }
+        
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: {{ colors.navy }}; }
+        .form-control { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        
+        .btn {
+            background-color: {{ colors.blue }}; color: white; padding: 10px 20px;
+            border: none; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%;
+        }
+        .btn:hover { background-color: {{ colors.navy }}; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { text-align: left; padding: 12px; border-bottom: 1px solid #e2e8f0; }
+        th { color: {{ colors.dark_gray }}; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>ALPHA</h2>
+        <p>SMART COMMUNICATION. BETTER BUSINESS.</p>
+        <div style="margin-top: 30px;">
+            <a href="/" class="nav-item">Dashboard</a>
+            <a href="/add-contact/" class="nav-item">Add Contact</a>
+            <a href="/agent-workspace/" class="nav-item active">Agent Workspace</a>
+            <a href="#" class="nav-item">Reports</a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h1>Agent Workspace</h1>
+        </div>
+        
+        {% if messages %}
+            {% for message in messages %}
+                <div style="background-color: #48bb78; color: white; padding: 15px; border-radius: 5px; margin-bottom: 20px; font-weight: bold;">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="grid-container">
+            <!-- Status Card -->
+            <div class="workspace-card">
+                <h2>Welcome, {{ request.user.username }}</h2>
+                <div class="status-display status-{{ agent_profile.status }}">
+                    Status: {{ agent_profile.status }}
+                </div>
+                
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label>Change Status</label>
+                        {{ form.status }}
+                    </div>
+                    <button type="submit" name="update_status" class="btn">Update Status</button>
+                </form>
+            </div>
+
+            <!-- Telephony & Simulated Call Card -->
+            <div class="workspace-card">
+                <h2>Make a Call</h2>
+                
+                <!-- Real Twilio Call Form -->
+                <div style="margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #e2e8f0;">
+                    <h3>Real Outbound Call</h3>
+                    <form id="callForm">
+                        <div class="form-group">
+                            <label>Phone Number (e.g., +971501234567)</label>
+                            <input type="text" name="phone_number" id="phone_number" class="form-control" placeholder="+971..." required>
+                        </div>
+                        <button type="submit" class="btn" style="background-color: #48bb78;">📞 Make Real Call</button>
+                    </form>
+                    <div id="callStatus" style="margin-top: 15px; font-weight: bold; text-align: center;"></div>
+                </div>
+
+                <!-- Simulate Call Form -->
+                <h3>Simulated Call</h3>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label>Direction</label>
+                        {{ call_form.direction }}
+                    </div>
+                    <div class="form-group">
+                        <label>Contact</label>
+                        {{ call_form.contact }}
+                    </div>
+                    <div class="form-group">
+                        <label>Notes</label>
+                        {{ call_form.notes }}
+                    </div>
+                    <button type="submit" name="make_call" class="btn" style="background-color: {{ colors.gold }}; color: {{ colors.navy }};">Log Simulated Call</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Call History Table -->
+        <div class="table-container">
+            <h2>My Call History</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date/Time</th>
+                        <th>Direction</th>
+                        <th>Contact</th>
+                        <th>Status</th>
+                        <th>Duration</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for call in call_history %}
+                    <tr>
+                        <td>{{ call.started_at|date:"M d, Y H:i" }}</td>
+                        <td>{{ call.direction }}</td>
+                        <td>{{ call.contact.first_name }} {{ call.contact.last_name }}</td>
+                        <td>{{ call.status }}</td>
+                        <td>{{ call.duration_seconds }}s</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: #a0aec0;">No calls recorded yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('callForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            var phone = document.getElementById('phone_number').value;
+            var statusDiv = document.getElementById('callStatus');
+            statusDiv.innerHTML = "Connecting to Twilio...";
+            statusDiv.style.color = "blue";
+
+            fetch('/api/trigger-call/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'phone_number=' + encodeURIComponent(phone)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.status === 'success') {
+                    statusDiv.innerHTML = "✅ Call initiated successfully! SID: " + data.call_sid;
+                    statusDiv.style.color = "green";
+                } else {
+                    statusDiv.innerHTML = "❌ Error: " + data.message;
+                    statusDiv.style.color = "red";
+                }
+            })
+            .catch(error => {
+                statusDiv.innerHTML = "❌ Network Error: " + error;
+                statusDiv.style.color = "red";
+            });
+        });
+    </script>
+</body>
+</html>

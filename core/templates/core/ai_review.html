@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Call Review - ALPHA</title>
+    <style>
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background-color: {{ colors.light_gray }}; color: {{ colors.dark_gray }}; display: flex; height: 100vh; }
+        .sidebar { width: 250px; background-color: {{ colors.navy }}; color: {{ colors.white }}; padding: 20px; display: flex; flex-direction: column; }
+        .sidebar h2 { color: {{ colors.gold }}; margin-bottom: 5px; }
+        .sidebar p { font-size: 10px; color: #a0aec0; margin-top: 0; }
+        .nav-item { padding: 12px 15px; margin: 5px 0; border-radius: 5px; text-decoration: none; color: white; display: block; }
+        .nav-item:hover, .nav-item.active { background-color: {{ colors.blue }}; }
+        .main-content { flex: 1; padding: 40px; overflow-y: auto; }
+        .card { background: {{ colors.white }}; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); max-width: 800px; border-top: 5px solid {{ colors.gold }}; margin-bottom: 20px; }
+        .form-control { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-family: inherit; box-sizing: border-box; margin-bottom: 15px; }
+        .btn { background-color: {{ colors.blue }}; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .btn:hover { background-color: {{ colors.navy }}; }
+        .summary-box { background-color: #edf2f7; padding: 20px; border-radius: 5px; border-left: 5px solid {{ colors.gold }}; white-space: pre-wrap; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>ALPHA</h2>
+        <p>SMART COMMUNICATION. BETTER BUSINESS.</p>
+        <div style="margin-top: 30px;">
+            <a href="/" class="nav-item">Dashboard</a>
+            <a href="/add-contact/" class="nav-item">Add Contact</a>
+            <a href="/agent-workspace/" class="nav-item">Agent Workspace</a>
+            <a href="/supervisor/" class="nav-item">Supervisor View</a>
+            <a href="/ai-review/" class="nav-item active">AI Call Review</a>
+            <a href="/settings/" class="nav-item">Settings</a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <h1>AI Call Review</h1>
+        <div class="card">
+            <h2>Paste Transcript</h2>
+            <form method="POST">
+                {% csrf_token %}
+                <textarea name="transcript" class="form-control" rows="6" placeholder="Paste the call transcript here...">{{ transcript }}</textarea>
+                <button type="submit" class="btn">Generate AI Summary</button>
+            </form>
+        </div>
+
+        {% if summary %}
+        <div class="card">
+            <h2>Generated Summary</h2>
+            <div class="summary-box">{{ summary }}</div>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

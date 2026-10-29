@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Contacts Directory - ALPHA</title>
+    <style>
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background-color: {{ colors.light_gray }}; color: {{ colors.dark_gray }}; display: flex; height: 100vh; }
+        .sidebar { width: 250px; background-color: {{ colors.navy }}; color: {{ colors.white }}; padding: 20px; display: flex; flex-direction: column; }
+        .sidebar h2 { color: {{ colors.gold }}; margin-bottom: 5px; }
+        .sidebar p { font-size: 10px; letter-spacing: 1px; color: #a0aec0; margin-top: 0; }
+        .nav-item { padding: 12px 15px; margin: 5px 0; border-radius: 5px; text-decoration: none; color: white; display: block; transition: 0.3s; }
+        .nav-item:hover, .nav-item.active { background-color: {{ colors.blue }}; }
+        .main-content { flex: 1; padding: 40px; overflow-y: auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .header h1 { margin: 0; color: {{ colors.navy }}; }
+        .card { background: {{ colors.white }}; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-top: 5px solid {{ colors.gold }}; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { text-align: left; padding: 12px; border-bottom: 1px solid #e2e8f0; }
+        th { color: {{ colors.dark_gray }}; font-weight: 600; }
+        .btn { background-color: {{ colors.blue }}; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; font-size: 14px; }
+        .btn:hover { background-color: {{ colors.navy }}; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>ALPHA</h2>
+        <p>SMART COMMUNICATION. BETTER BUSINESS.</p>
+        <div style="margin-top: 30px;">
+            <a href="/" class="nav-item">Dashboard</a>
+            <a href="/add-contact/" class="nav-item">Add Contact</a>
+            <a href="/calls/" class="nav-item">Calls</a>
+            <a href="/contacts/" class="nav-item active">Contacts</a>
+            <a href="/agents/" class="nav-item">Agents</a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h1>Contacts Directory</h1>
+            <a href="/add-contact/" class="btn">+ Add New Contact</a>
+        </div>
+        <div class="card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+                        <th>Organization</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for contact in contacts %}
+                    <tr>
+                        <td>{{ contact.first_name }} {{ contact.last_name }}</td>
+                        <td>{{ contact.phone_number }}</td>
+                        <td>{{ contact.email }}</td>
+                        <td>{{ contact.organization.name }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" style="text-align: center; color: #a0aec0;">No contacts found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

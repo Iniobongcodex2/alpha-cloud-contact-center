@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Agents Directory - ALPHA</title>
+    <style>
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background-color: {{ colors.light_gray }}; color: {{ colors.dark_gray }}; display: flex; height: 100vh; }
+        .sidebar { width: 250px; background-color: {{ colors.navy }}; color: {{ colors.white }}; padding: 20px; display: flex; flex-direction: column; }
+        .sidebar h2 { color: {{ colors.gold }}; margin-bottom: 5px; }
+        .sidebar p { font-size: 10px; letter-spacing: 1px; color: #a0aec0; margin-top: 0; }
+        .nav-item { padding: 12px 15px; margin: 5px 0; border-radius: 5px; text-decoration: none; color: white; display: block; transition: 0.3s; }
+        .nav-item:hover, .nav-item.active { background-color: {{ colors.blue }}; }
+        .main-content { flex: 1; padding: 40px; overflow-y: auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .header h1 { margin: 0; color: {{ colors.navy }}; }
+        .card { background: {{ colors.white }}; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-top: 5px solid {{ colors.gold }}; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { text-align: left; padding: 12px; border-bottom: 1px solid #e2e8f0; }
+        th { color: {{ colors.dark_gray }}; font-weight: 600; }
+        .status-badge { padding: 5px 10px; border-radius: 15px; font-size: 12px; font-weight: bold; }
+        .status-Available { background-color: #c6f6d5; color: #22543d; }
+        .status-Busy { background-color: #fed7d7; color: #742a2a; }
+        .status-Offline { background-color: #e2e8f0; color: #4a5568; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>ALPHA</h2>
+        <p>SMART COMMUNICATION. BETTER BUSINESS.</p>
+        <div style="margin-top: 30px;">
+            <a href="/" class="nav-item">Dashboard</a>
+            <a href="/add-contact/" class="nav-item">Add Contact</a>
+            <a href="/calls/" class="nav-item">Calls</a>
+            <a href="/contacts/" class="nav-item">Contacts</a>
+            <a href="/agents/" class="nav-item active">Agents</a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h1>Agent Directory</h1>
+        </div>
+        <div class="card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Status</th>
+                        <th>Extension</th>
+                        <th>Organization</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for agent in agents %}
+                    <tr>
+                        <td>{{ agent.user.username }}</td>
+                        <td><span class="status-badge status-{{ agent.status }}">{{ agent.status }}</span></td>
+                        <td>{{ agent.extension|default:"N/A" }}</td>
+                        <td>{{ agent.organization.name|default:"None" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" style="text-align: center; color: #a0aec0;">No agents found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
