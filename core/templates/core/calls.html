@@ -17,6 +17,12 @@
         table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         th, td { text-align: left; padding: 12px; border-bottom: 1px solid #e2e8f0; }
         th { color: {{ colors.dark_gray }}; font-weight: 600; }
+        .btn-export {
+            background-color: #48bb78; color: white; padding: 10px 15px;
+            border: none; border-radius: 5px; cursor: pointer; text-decoration: none;
+            font-weight: bold; font-size: 14px;
+        }
+        .btn-export:hover { background-color: #38a169; }
     </style>
 </head>
 <body>
@@ -35,6 +41,7 @@
     <div class="main-content">
         <div class="header">
             <h1>Global Call History</h1>
+            <a href="/export-calls/" class="btn-export">⬇ Export to CSV</a>
         </div>
         <div class="card">
             <table>

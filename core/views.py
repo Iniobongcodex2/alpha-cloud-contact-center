@@ -210,3 +210,35 @@ def add_organization(request):
         'form': form,
     }
     return render(request, 'core/add_organization.html', context)
+
+
+# --- STAGE 10: CSV EXPORT ---
+import csv
+from django.http import HttpResponse
+
+def export_calls_csv(request):
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="alpha_call_history.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['Call ID', 'Date/Time', 'Direction', 'Agent', 'Contact', 'Status', 'Duration (s)'])
+
+    # Fetch calls (you can filter by organization here later)
+    calls = CallRecord.objects.all().order_by('-started_at')
+
+    for call in calls:
+        agent_name = call.agent.user.username if call.agent else "Unassigned"
+        contact_name = f"{call.contact.first_name} {call.contact.last_name}" if call.contact else "Unknown"
+        
+        writer.writerow([
+            call.id,
+            call.started_at.strftime("%Y-%m-%d %H:%M:%S"),
+            call.direction,
+            agent_name,
+            contact_name,
+            call.status,
+            call.duration_seconds
+        ])
+
+    return response
