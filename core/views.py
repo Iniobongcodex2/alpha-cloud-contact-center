@@ -1,13 +1,14 @@
 import os
+import csv
+import anthropic
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.conf import settings
 from .models import Contact, AgentProfile, CallRecord, Queue, Subscription
-from .forms import ContactForm, AgentStatusForm, SimulatedCallForm
+from .forms import ContactForm, AgentStatusForm, SimulatedCallForm, OrganizationForm
 from .twilio_service import make_outbound_call
-import anthropic
 
 # --- Brand Colors Helper ---
 def get_brand_colors():
@@ -16,7 +17,8 @@ def get_brand_colors():
         'white': '#FFFFFF', 'light_gray': '#F4F6F9', 'dark_gray': '#2D3748'
     }
 
-# --- CRM View ---
+# --- CRM Views ---
+@login_required
 def dashboard(request):
     contacts = Contact.objects.all().order_by('-created_at')
     context = {
@@ -26,6 +28,7 @@ def dashboard(request):
     }
     return render(request, 'core/dashboard.html', context)
 
+@login_required
 def add_contact(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)
@@ -37,6 +40,19 @@ def add_contact(request):
         form = ContactForm()
     context = {'colors': get_brand_colors(), 'form': form}
     return render(request, 'core/add_contact.html', context)
+
+@login_required
+def add_organization(request):
+    if request.method == 'POST':
+        form = OrganizationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Organization created successfully!')
+            return redirect('add_contact')
+    else:
+        form = OrganizationForm()
+    context = {'colors': get_brand_colors(), 'form': form}
+    return render(request, 'core/add_organization.html', context)
 
 # --- Agent Workspace View ---
 @login_required
@@ -92,6 +108,7 @@ def organization_settings(request):
     return render(request, 'core/settings.html', context)
 
 # --- Twilio Telephony ---
+@login_required
 def trigger_call(request):
     if request.method == 'POST':
         to_number = request.POST.get('phone_number')
@@ -102,9 +119,8 @@ def trigger_call(request):
         return JsonResponse(result)
     return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
 
+@login_required
 def get_twilio_token(request):
-    if not request.user.is_authenticated:
-        return JsonResponse({'error': 'Unauthorized'}, status=401)
     account_sid = settings.TWILIO_ACCOUNT_SID
     auth_token = settings.TWILIO_AUTH_TOKEN
     api_key = os.getenv('TWILIO_API_KEY')
@@ -120,6 +136,7 @@ def get_twilio_token(request):
     return JsonResponse({'token': token.to_jwt()})
 
 # --- AI Summary View ---
+@login_required
 def ai_review(request):
     summary = None
     transcript = ""
@@ -156,75 +173,31 @@ def ai_review(request):
     }
     return render(request, 'core/ai_review.html', context)
 
-
 # --- DIRECTORY VIEWS ---
-
+@login_required
 def calls(request):
-    from .models import CallRecord
     call_history = CallRecord.objects.all().order_by('-started_at')
-    brand_colors = {
-        'navy': '#0A1E3D', 'blue': '#1A4B8C', 'gold': '#C9A84C',
-        'white': '#FFFFFF', 'light_gray': '#F4F6F9', 'dark_gray': '#2D3748'
-    }
-    return render(request, 'core/calls.html', {'colors': brand_colors, 'call_history': call_history})
+    return render(request, 'core/calls.html', {'colors': get_brand_colors(), 'call_history': call_history})
 
+@login_required
 def contacts(request):
-    from .models import Contact
     all_contacts = Contact.objects.all().order_by('-created_at')
-    brand_colors = {
-        'navy': '#0A1E3D', 'blue': '#1A4B8C', 'gold': '#C9A84C',
-        'white': '#FFFFFF', 'light_gray': '#F4F6F9', 'dark_gray': '#2D3748'
-    }
-    return render(request, 'core/contacts.html', {'colors': brand_colors, 'contacts': all_contacts})
+    return render(request, 'core/contacts.html', {'colors': get_brand_colors(), 'contacts': all_contacts})
 
+@login_required
 def agents(request):
-    from .models import AgentProfile
     all_agents = AgentProfile.objects.all()
-    brand_colors = {
-        'navy': '#0A1E3D', 'blue': '#1A4B8C', 'gold': '#C9A84C',
-        'white': '#FFFFFF', 'light_gray': '#F4F6F9', 'dark_gray': '#2D3748'
-    }
-    return render(request, 'core/agents.html', {'colors': brand_colors, 'agents': all_agents})
-
-
-# --- CRM: Add Organization ---
-from .forms import OrganizationForm
-
-def add_organization(request):
-    if request.method == 'POST':
-        form = OrganizationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Organization created successfully!')
-            return redirect('add_contact') # Send them back to the contact form to add the person
-    else:
-        form = OrganizationForm()
-        
-    brand_colors = {
-        'navy': '#0A1E3D', 'blue': '#1A4B8C', 'gold': '#C9A84C',
-        'white': '#FFFFFF', 'light_gray': '#F4F6F9', 'dark_gray': '#2D3748'
-    }
-    
-    context = {
-        'colors': brand_colors,
-        'form': form,
-    }
-    return render(request, 'core/add_organization.html', context)
-
+    return render(request, 'core/agents.html', {'colors': get_brand_colors(), 'agents': all_agents})
 
 # --- STAGE 10: CSV EXPORT ---
-import csv
-from django.http import HttpResponse
-
+@login_required
 def export_calls_csv(request):
-    # Create the HttpResponse object with the appropriate CSV header.
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="alpha_call_history.csv"'
 
     writer = csv.writer(response)
     writer.writerow(['Call ID', 'Date/Time', 'Direction', 'Agent', 'Contact', 'Status', 'Duration (s)'])
 
-    # Fetch calls (you can filter by organization here later)
     calls = CallRecord.objects.all().order_by('-started_at')
 
     for call in calls:
@@ -232,13 +205,8 @@ def export_calls_csv(request):
         contact_name = f"{call.contact.first_name} {call.contact.last_name}" if call.contact else "Unknown"
         
         writer.writerow([
-            call.id,
-            call.started_at.strftime("%Y-%m-%d %H:%M:%S"),
-            call.direction,
-            agent_name,
-            contact_name,
-            call.status,
-            call.duration_seconds
+            call.id, call.started_at.strftime("%Y-%m-%d %H:%M:%S"),
+            call.direction, agent_name, contact_name, call.status, call.duration_seconds
         ])
 
     return response

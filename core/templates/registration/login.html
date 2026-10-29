@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - ALPHA Cloud Contact Center</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0A1E3D; /* ALPHA Navy */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .login-card {
+            background-color: #FFFFFF;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+            border-top: 5px solid #C9A84C; /* ALPHA Gold */
+        }
+        .brand-title {
+            text-align: center;
+            font-size: 32px;
+            font-weight: 900;
+            color: #0A1E3D;
+            margin-bottom: 5px;
+            letter-spacing: 2px;
+        }
+        .brand-tagline {
+            text-align: center;
+            font-size: 10px;
+            color: #a0aec0;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #2D3748;
+            font-size: 14px;
+        }
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e0;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: #1A4B8C;
+        }
+        .btn-login {
+            width: 100%;
+            background-color: #1A4B8C; /* ALPHA Blue */
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        .btn-login:hover {
+            background-color: #0A1E3D;
+        }
+        .error-message {
+            background-color: #fed7d7;
+            color: #742a2a;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            text-align: center;
+        }
+        .forgot-password {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #718096;
+        }
+        .forgot-password strong {
+            color: #1A4B8C;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <div class="brand-title">ALPHA</div>
+        <div class="brand-tagline">SMART COMMUNICATION. BETTER BUSINESS.</div>
+
+        {% if form.errors %}
+            <div class="error-message">
+                Please enter a correct username and password.
+            </div>
+        {% endif %}
+
+        <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="id_username">Username</label>
+                <input type="text" name="username" id="id_username" class="form-control" required autofocus>
+            </div>
+            
+            <div class="form-group">
+                <label for="id_password">Password</label>
+                <input type="password" name="password" id="id_password" class="form-control" required>
+            </div>
+
+            <button type="submit" class="btn-login">Sign In</button>
+        </form>
+
+        <div class="forgot-password">
+            Forgot your password?<br>
+            <strong>Contact your ALPHA Administrator to reset it.</strong>
+        </div>
+    </div>
+
+</body>
+</html>
