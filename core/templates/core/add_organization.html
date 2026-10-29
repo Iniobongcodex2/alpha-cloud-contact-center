@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Organization - ALPHA</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: {{ colors.light_gray }};
+            color: {{ colors.dark_gray }};
+            display: flex;
+            height: 100vh;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: {{ colors.navy }};
+            color: {{ colors.white }};
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .sidebar h2 { color: {{ colors.gold }}; margin-bottom: 5px; }
+        .sidebar p { font-size: 10px; letter-spacing: 1px; color: #a0aec0; margin-top: 0; }
+        .nav-item {
+            padding: 12px 15px; margin: 5px 0; border-radius: 5px;
+            cursor: pointer; transition: 0.3s; text-decoration: none; color: white; display: block;
+        }
+        .nav-item:hover, .nav-item.active { background-color: {{ colors.blue }}; }
+        
+        .main-content { flex: 1; padding: 40px; overflow-y: auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .header h1 { margin: 0; color: {{ colors.navy }}; }
+        
+        .form-container {
+            background: {{ colors.white }};
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            max-width: 600px;
+            border-top: 5px solid {{ colors.gold }};
+        }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: {{ colors.navy }}; }
+        .form-control {
+            width: 100%; padding: 10px; border: 1px solid #ccc;
+            border-radius: 5px; box-sizing: border-box; font-family: inherit;
+        }
+        .btn-submit {
+            background-color: {{ colors.blue }}; color: white; padding: 10px 20px;
+            border: none; border-radius: 5px; cursor: pointer; font-weight: bold; margin-top: 10px;
+        }
+        .btn-submit:hover { background-color: {{ colors.navy }}; }
+        .btn-cancel {
+            background-color: #e2e8f0; color: {{ colors.dark_gray }}; padding: 10px 20px;
+            border: none; border-radius: 5px; cursor: pointer; text-decoration: none; margin-left: 10px;
+        }
+        .errorlist { color: red; font-size: 12px; margin: 5px 0; padding: 0; list-style: none; }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>ALPHA</h2>
+        <p>SMART COMMUNICATION. BETTER BUSINESS.</p>
+        <div style="margin-top: 30px;">
+            <a href="/" class="nav-item">Dashboard</a>
+            <a href="/contacts/" class="nav-item">Contacts</a>
+            <a href="/add-contact/" class="nav-item">Add Contact</a>
+            <a href="/add-organization/" class="nav-item active">Add Organization</a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h1>Add New Organization</h1>
+        </div>
+        
+        <div class="form-container">
+            <form method="POST">
+                {% csrf_token %}
+                
+                {% if form.errors %}
+                    <div style="background-color: #fed7d7; color: #742a2a; padding: 10px; border-radius: 5px; margin-bottom: 15px;">
+                        Please correct the errors below.
+                    </div>
+                {% endif %}
+
+                <div class="form-group">
+                    <label>Company / Organization Name</label>
+                    {{ form.name }}
+                    {{ form.name.errors }}
+                </div>
+
+                <button type="submit" class="btn-submit">Save Organization</button>
+                <a href="/add-contact/" class="btn-cancel">Cancel</a>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

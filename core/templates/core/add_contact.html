@@ -66,9 +66,9 @@
         <div style="margin-top: 30px;">
             <a href="/" class="nav-item">Dashboard</a>
             <a href="/add-contact/" class="nav-item active">Add Contact</a>
-            <a href="#" class="nav-item">Calls</a>
-            <a href="#" class="nav-item">Contacts</a>
-            <a href="#" class="nav-item">Agents</a>
+            <a href="/calls/" class="nav-item">Calls</a>
+            <a href="/contacts/" class="nav-item">Contacts</a>
+            <a href="/agents/" class="nav-item">Agents</a>
         </div>
     </div>
 
@@ -89,6 +89,11 @@
                         {% endif %}
                     </div>
                 {% endfor %}
+                
+                <div style="margin-top: 15px; margin-bottom: 15px; font-size: 14px;">
+                    Can't find the organization? <a href="/add-organization/" style="color: #1A4B8C; font-weight: bold; text-decoration: none;">+ Add New Organization</a>
+                </div>
+
                 <button type="submit" class="btn-submit">Save Contact</button>
                 <a href="/" class="btn-cancel">Cancel</a>
             </form>

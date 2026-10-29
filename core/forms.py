@@ -1,5 +1,5 @@
 from django import forms
-from .models import Contact, AgentProfile, CallRecord
+from .models import Organization, Contact, AgentProfile, CallRecord
 
 class ContactForm(forms.ModelForm):
     class Meta:
@@ -13,7 +13,6 @@ class ContactForm(forms.ModelForm):
             'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email Address'}),
             'notes': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Notes'}),
         }
-
 
 class AgentStatusForm(forms.ModelForm):
     class Meta:
@@ -31,4 +30,12 @@ class SimulatedCallForm(forms.ModelForm):
             'direction': forms.Select(attrs={'class': 'form-control'}),
             'contact': forms.Select(attrs={'class': 'form-control'}),
             'notes': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'placeholder': 'Call notes...'}),
+        }
+
+class OrganizationForm(forms.ModelForm):
+    class Meta:
+        model = Organization
+        fields = ['name']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Company Name'}),
         }

@@ -185,3 +185,28 @@ def agents(request):
         'white': '#FFFFFF', 'light_gray': '#F4F6F9', 'dark_gray': '#2D3748'
     }
     return render(request, 'core/agents.html', {'colors': brand_colors, 'agents': all_agents})
+
+
+# --- CRM: Add Organization ---
+from .forms import OrganizationForm
+
+def add_organization(request):
+    if request.method == 'POST':
+        form = OrganizationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Organization created successfully!')
+            return redirect('add_contact') # Send them back to the contact form to add the person
+    else:
+        form = OrganizationForm()
+        
+    brand_colors = {
+        'navy': '#0A1E3D', 'blue': '#1A4B8C', 'gold': '#C9A84C',
+        'white': '#FFFFFF', 'light_gray': '#F4F6F9', 'dark_gray': '#2D3748'
+    }
+    
+    context = {
+        'colors': brand_colors,
+        'form': form,
+    }
+    return render(request, 'core/add_organization.html', context)
