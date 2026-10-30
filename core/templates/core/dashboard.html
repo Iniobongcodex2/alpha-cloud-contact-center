@@ -116,6 +116,40 @@
         .btn:hover {
             background-color: {{ colors.navy }};
         }
+
+        /* --- MOBILE RESPONSIVENESS --- */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+                height: auto;
+            }
+            .sidebar {
+                width: 100%;
+                padding: 15px;
+                box-sizing: border-box;
+            }
+            .main-content {
+                padding: 15px;
+            }
+            .dashboard-cards {
+                grid-template-columns: 1fr; /* Stacks cards vertically */
+            }
+            table {
+                display: block;
+                overflow-x: auto; /* Adds horizontal scroll for tables */
+                white-space: nowrap;
+            }
+            .sidebar div {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 5px;
+            }
+            .nav-item {
+                padding: 8px 12px;
+                margin: 0;
+                font-size: 14px;
+            }
+        }
     </style>
 </head>
 <body>
