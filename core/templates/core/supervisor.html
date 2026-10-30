@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Supervisor Dashboard - ALPHA</title>
     <style>
         body { margin: 0; font-family: 'Segoe UI', sans-serif; background-color: {{ colors.light_gray }}; color: {{ colors.dark_gray }}; display: flex; height: 100vh; }
@@ -21,6 +22,34 @@
         .status-Available { background-color: #c6f6d5; color: #22543d; }
         .status-Busy { background-color: #fed7d7; color: #742a2a; }
         .status-Offline { background-color: #e2e8f0; color: #4a5568; }
+
+        /* --- MOBILE RESPONSIVENESS --- */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+                height: auto;
+            }
+            .sidebar {
+                width: 100%;
+                padding: 15px;
+                box-sizing: border-box;
+            }
+            .main-content {
+                padding: 15px;
+            }
+            .grid-container {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            .card {
+                padding: 20px;
+            }
+            table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+        }
     </style>
 </head>
 <body>

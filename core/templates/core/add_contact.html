@@ -56,6 +56,26 @@
             background-color: #e2e8f0; color: {{ colors.dark_gray }}; padding: 10px 20px;
             border: none; border-radius: 5px; cursor: pointer; text-decoration: none; margin-left: 10px;
         }
+
+        /* --- MOBILE RESPONSIVENESS --- */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+                height: auto;
+            }
+            .sidebar {
+                width: 100%;
+                padding: 15px;
+                box-sizing: border-box;
+            }
+            .main-content {
+                padding: 15px;
+            }
+            .form-container {
+                max-width: 100%;
+                padding: 20px;
+            }
+        }
     </style>
 </head>
 <body>

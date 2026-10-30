@@ -73,6 +73,34 @@
         table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         th, td { text-align: left; padding: 12px; border-bottom: 1px solid #e2e8f0; }
         th { color: {{ colors.dark_gray }}; font-weight: 600; }
+
+        /* --- MOBILE RESPONSIVENESS --- */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+                height: auto;
+            }
+            .sidebar {
+                width: 100%;
+                padding: 15px;
+                box-sizing: border-box;
+            }
+            .main-content {
+                padding: 15px;
+            }
+            .grid-container {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            .workspace-card {
+                padding: 20px;
+            }
+            table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+        }
     </style>
 </head>
 <body>
