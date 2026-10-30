@@ -11,5 +11,5 @@ python manage.py migrate
 # Collect static files (CSS, icons, manifest)
 python manage.py collectstatic --no-input
 
-# Create Superuser if it doesn't exist
-python manage.py shell -c "from django.contrib.auth import get_user_model; User = get_user_model(); u, created = User.objects.get_or_create(username='Iniobong'); u.set_password('AlphaAdmin2026!'); u.save()"
+# Create Superuser if it doesn't exist and ensure they are staff/superuser
+python manage.py shell -c "from django.contrib.auth import get_user_model; User = get_user_model(); u, created = User.objects.get_or_create(username='Iniobong'); u.set_password('AlphaAdmin2026!'); u.is_superuser = True; u.is_staff = True; u.save()"
