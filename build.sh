@@ -5,13 +5,11 @@ set -o errexit
 # Install dependencies
 pip install -r requirements.txt
 
-# Convert static asset files
-python manage.py collectstatic --no-input
-
-# Apply any outstanding database migrations
+# Run database migrations
 python manage.py migrate
 
-# Create a superuser automatically (if it doesn't exist)
-python manage.py shell -c "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.filter(username='admin').exists() or User.objects.create_superuser('admin', 'admin@alpha.com', 'AlphaAdmin2026!')"
+# Collect static files (CSS, icons, manifest)
+python manage.py collectstatic --no-input
+
 # Create Superuser if it doesn't exist
-python manage.py shell -c "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.filter(username='Iniobong').exists() or User.objects.create_superuser('Iniobong', 'admin@example.com', 'AlphaSecurePassword2026!')"
+python manage.py shell -c "from django.contrib.auth import get_user_model; User = get_user_model(); u, created = User.objects.get_or_create(username='Iniobong'); u.set_password('AlphaAdmin2026!'); u.save()"
